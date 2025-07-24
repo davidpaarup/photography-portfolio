@@ -30,12 +30,6 @@ const portfolioImages = [
     category: "Portrait",
   },
   {
-    id: 4,
-    src: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=800&fit=crop&auto=format",
-    alt: "Street Photography",
-    category: "Street",
-  },
-  {
     id: 5,
     src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=1200&fit=crop&auto=format",
     alt: "Nature Close-up",
