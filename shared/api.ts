@@ -16,27 +16,21 @@ export interface DemoResponse {
  */
 export interface StrapiImage {
   id: number;
-  attributes: {
-    url: string;
+  url: string;
     alternativeText?: string;
     width?: number;
     height?: number;
-  };
 }
 
 export interface StrapiPortfolioItem {
   id: number;
-  attributes: {
-    title: string;
-    description?: string;
-    category: string;
-    featured?: boolean;
-    image: {
-      data: StrapiImage;
-    };
-    createdAt: string;
-    updatedAt: string;
-  };
+  title: string;
+  description?: string;
+  category: string;
+  featured?: boolean;
+  image: StrapiImage;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface StrapiPortfolioResponse {

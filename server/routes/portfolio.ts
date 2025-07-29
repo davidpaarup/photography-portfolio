@@ -21,6 +21,7 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
     };
 
     if (STRAPI_API_TOKEN) {
+      
       headers["Authorization"] = `Bearer ${STRAPI_API_TOKEN}`;
     }
 
@@ -38,16 +39,16 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
     // Transform Strapi data to our frontend format
     const portfolioCards: PortfolioCard[] = strapiData.data.map((item) => ({
       id: item.id,
-      src: item.attributes.image.data
-        ? `${STRAPI_URL}${item.attributes.image.data.attributes.url}`
+      src: item.image[0]
+        ? item.image[0].url
         : "/placeholder.svg",
       alt:
-        item.attributes.image.data?.attributes.alternativeText ||
-        item.attributes.title,
-      category: item.attributes.category,
-      title: item.attributes.title,
-      description: item.attributes.description,
-      featured: item.attributes.featured || false,
+        item.image[0]?.alternativeText ||
+        item.title,
+      category: item.category,
+      title: item.title,
+      description: item.description,
+      featured: item.featured || false,
     }));
 
     res.json({
@@ -140,7 +141,7 @@ export const handleCategories: RequestHandler = async (req, res) => {
     // Extract unique categories
     const categories = [
       "All",
-      ...new Set(strapiData.data.map((item) => item.attributes.category)),
+      ...new Set(strapiData.data.map((item) => item.category)),
     ];
 
     res.json({ categories });
