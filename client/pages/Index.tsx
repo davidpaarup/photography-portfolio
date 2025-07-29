@@ -7,60 +7,65 @@ import {
   Mail,
   ArrowRight,
   Camera,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const portfolioImages = [
-  {
-    id: 1,
-    src: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&h=1200&fit=crop&auto=format",
-    alt: "Urban Architecture",
-    category: "Architecture",
-  },
-  {
-    id: 2,
-    src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop&auto=format",
-    alt: "Mountain Landscape",
-    category: "Landscape",
-  },
-  {
-    id: 3,
-    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=1000&fit=crop&auto=format",
-    alt: "Portrait Session",
-    category: "Portrait",
-  },
-  {
-    id: 5,
-    src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=1200&fit=crop&auto=format",
-    alt: "Nature Close-up",
-    category: "Nature",
-  },
-  {
-    id: 6,
-    src: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&h=600&fit=crop&auto=format",
-    alt: "Urban Night",
-    category: "Street",
-  },
-];
+import { PortfolioCard } from "@shared/api";
 
 export default function Index() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [selectedImage, setSelectedImage] = useState<PortfolioCard | null>(null);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [portfolioImages, setPortfolioImages] = useState<PortfolioCard[]>([]);
+  const [categories, setCategories] = useState<string[]>(["All"]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const categories = [
-    "All",
-    "Architecture",
-    "Landscape",
-    "Portrait",
-    "Street",
-    "Nature",
-  ];
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        if (response.ok) {
+          const data = await response.json();
+          setCategories(data.categories);
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-  const filteredImages =
-    activeCategory === "All"
-      ? portfolioImages
-      : portfolioImages.filter((img) => img.category === activeCategory);
+  // Fetch portfolio images based on active category
+  useEffect(() => {
+    const fetchPortfolioImages = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const url = activeCategory === "All"
+          ? '/api/portfolio'
+          : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch portfolio: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setPortfolioImages(data.data);
+      } catch (err) {
+        console.error('Failed to fetch portfolio images:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load portfolio');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPortfolioImages();
+  }, [activeCategory]);
+
+  const filteredImages = portfolioImages;
 
   useEffect(() => {
     if (selectedImage) {
@@ -227,31 +232,71 @@ export default function Index() {
             ))}
           </div>
 
-          {/* Image Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredImages.map((image, index) => (
-              <div
-                key={image.id}
-                className={`group cursor-pointer overflow-hidden rounded-lg bg-card shadow-lg hover:shadow-xl transition-all duration-500 animate-zoom-in`}
-                style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => setSelectedImage(image)}
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Loading portfolio...</span>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div className="text-center py-20">
+              <p className="text-destructive mb-4">Failed to load portfolio: {error}</p>
+              <Button
+                onClick={() => window.location.reload()}
+                variant="outline"
               >
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300">
-                    <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <p className="font-semibold">{image.alt}</p>
-                      <p className="text-sm text-white/80">{image.category}</p>
+                Try Again
+              </Button>
+            </div>
+          )}
+
+          {/* Image Grid */}
+          {!isLoading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredImages.length === 0 ? (
+                <div className="col-span-full text-center py-20">
+                  <p className="text-muted-foreground text-lg">No images found for this category.</p>
+                </div>
+              ) : (
+                filteredImages.map((image, index) => (
+                  <div
+                    key={image.id}
+                    className={`group cursor-pointer overflow-hidden rounded-lg bg-card shadow-lg hover:shadow-xl transition-all duration-500 animate-zoom-in`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                    onClick={() => setSelectedImage(image)}
+                  >
+                    <div className="relative aspect-[4/5] overflow-hidden">
+                      <img
+                        src={image.src}
+                        alt={image.alt}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300">
+                        <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <p className="font-semibold">{image.title || image.alt}</p>
+                          <p className="text-sm text-white/80">{image.category}</p>
+                          {image.description && (
+                            <p className="text-xs text-white/70 mt-1 line-clamp-2">{image.description}</p>
+                          )}
+                        </div>
+                      </div>
+                      {image.featured && (
+                        <div className="absolute top-4 right-4">
+                          <div className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium">
+                            Featured
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -361,8 +406,11 @@ export default function Index() {
               onClick={(e) => e.stopPropagation()}
             />
             <div className="absolute bottom-4 left-4 text-white">
-              <h3 className="text-xl font-semibold">{selectedImage.alt}</h3>
+              <h3 className="text-xl font-semibold">{selectedImage.title || selectedImage.alt}</h3>
               <p className="text-white/80">{selectedImage.category}</p>
+              {selectedImage.description && (
+                <p className="text-sm text-white/70 mt-2 max-w-md">{selectedImage.description}</p>
+              )}
             </div>
           </div>
         </div>
