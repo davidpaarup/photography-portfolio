@@ -50,6 +50,7 @@ export default function Index() {
             ? "/api/portfolio"
             : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
 
+        console.log("Fetching portfolio from:", url);
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Failed to fetch portfolio: ${response.statusText}`);
