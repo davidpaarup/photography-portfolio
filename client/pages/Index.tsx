@@ -45,19 +45,61 @@ export default function Index() {
       setIsLoading(true);
       setError(null);
       try {
-        const url =
+        /*const url =
           activeCategory === "All"
             ? "/api/portfolio"
             : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
 
-        console.log("Fetching portfolio from:", url);
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Failed to fetch portfolio: ${response.statusText}`);
         }
 
-        const data = await response.json();
-        setPortfolioImages(data.data);
+        const data = await response.json();*/
+
+        const data : PortfolioCard[] = [
+      {
+        id: 1,
+        src: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&h=1200&fit=crop&auto=format",
+        alt: "Urban Architecture",
+        category: "Architecture",
+        title: "Urban Architecture",
+        featured: true,
+      },
+      {
+        id: 2,
+        src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop&auto=format",
+        alt: "Mountain Landscape",
+        category: "Landscape",
+        title: "Mountain Landscape",
+        featured: false,
+      },
+      {
+        id: 3,
+        src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=1000&fit=crop&auto=format",
+        alt: "Portrait Session",
+        category: "Portrait",
+        title: "Portrait Session",
+        featured: true,
+      },
+      {
+        id: 5,
+        src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=1200&fit=crop&auto=format",
+        alt: "Nature Close-up",
+        category: "Nature",
+        title: "Nature Close-up",
+        featured: false,
+      },
+      {
+        id: 6,
+        src: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&h=600&fit=crop&auto=format",
+        alt: "Urban Night",
+        category: "Street",
+        title: "Urban Night",
+        featured: false,
+      },
+    ];
+        setPortfolioImages(data);
       } catch (err) {
         console.error("Failed to fetch portfolio images:", err);
         setError(

@@ -5,7 +5,7 @@ const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337";
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 export const handlePortfolio: RequestHandler = async (req, res) => {
- /*try {
+  try {
     const { category } = req.query;
 
     // Build Strapi API URL with filters
@@ -56,7 +56,7 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
       meta: strapiData.meta,
     });
   } catch (error) {
-    console.error("Portfolio API error:", error);*/
+    console.error("Portfolio API error:", error);
 
     // Fallback to sample data if Strapi is not available
     const fallbackData: PortfolioCard[] = [
@@ -113,7 +113,7 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
         },
       },
     });
- //}
+  }
 };
 
 export const handleCategories: RequestHandler = async (req, res) => {
