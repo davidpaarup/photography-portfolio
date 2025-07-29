@@ -13,6 +13,7 @@ cp .env.example .env
 ```
 
 Edit `.env`:
+
 ```
 STRAPI_URL=http://localhost:1337
 STRAPI_API_TOKEN=your_strapi_api_token_here
@@ -23,13 +24,15 @@ STRAPI_API_TOKEN=your_strapi_api_token_here
 Create a content type called `portfolio-item` in your Strapi admin panel with the following fields:
 
 #### Fields:
+
 - **title** (Text, required): Title of the portfolio item
-- **description** (Text, optional): Description of the portfolio item  
+- **description** (Text, optional): Description of the portfolio item
 - **category** (Text, required): Category (e.g., "Architecture", "Landscape", "Portrait", "Street", "Nature")
 - **featured** (Boolean, optional): Whether this item should be marked as featured
 - **image** (Single Media, required): The portfolio image
 
 #### API Configuration:
+
 1. Go to Settings → Roles → Public
 2. Enable the following permissions for `portfolio-item`:
    - `find` (to fetch all items)
@@ -48,12 +51,15 @@ For production or private content:
 The application provides these API endpoints:
 
 ### GET `/api/portfolio`
+
 Fetches all portfolio items, or filtered by category.
 
 **Query Parameters:**
+
 - `category` (optional): Filter by category name
 
 **Examples:**
+
 ```bash
 # Get all portfolio items
 curl http://localhost:8080/api/portfolio
@@ -63,9 +69,11 @@ curl http://localhost:8080/api/portfolio?category=Architecture
 ```
 
 ### GET `/api/categories`
+
 Fetches all unique categories from portfolio items.
 
 **Example:**
+
 ```bash
 curl http://localhost:8080/api/categories
 ```
@@ -77,19 +85,21 @@ If Strapi is not available or configured, the application will automatically fal
 ## Data Structure
 
 ### Frontend Data Format
+
 ```typescript
 interface PortfolioCard {
   id: number;
-  src: string;           // Full image URL
-  alt: string;           // Alt text for the image
-  category: string;      // Category name
-  title: string;         // Portfolio item title
-  description?: string;  // Optional description
-  featured?: boolean;    // Whether item is featured
+  src: string; // Full image URL
+  alt: string; // Alt text for the image
+  category: string; // Category name
+  title: string; // Portfolio item title
+  description?: string; // Optional description
+  featured?: boolean; // Whether item is featured
 }
 ```
 
 ### Strapi Response Format
+
 The API automatically transforms Strapi's response format to the frontend format:
 
 ```typescript
@@ -99,7 +109,7 @@ The API automatically transforms Strapi's response format to the frontend format
   "attributes": {
     "title": "Urban Architecture",
     "description": "Modern building design",
-    "category": "Architecture", 
+    "category": "Architecture",
     "featured": true,
     "image": {
       "data": {
@@ -118,7 +128,7 @@ The API automatically transforms Strapi's response format to the frontend format
   "src": "http://localhost:1337/uploads/image.jpg",
   "alt": "Urban building",
   "category": "Architecture",
-  "title": "Urban Architecture", 
+  "title": "Urban Architecture",
   "description": "Modern building design",
   "featured": true
 }
@@ -129,10 +139,12 @@ The API automatically transforms Strapi's response format to the frontend format
 The application includes loading states, error handling, and automatic retries for a smooth user experience even when Strapi is temporarily unavailable.
 
 ### Loading States
+
 - Shows spinner while fetching data
 - Graceful loading for category changes
 
-### Error Handling  
+### Error Handling
+
 - Falls back to sample data if Strapi is unavailable
 - Shows user-friendly error messages
 - Includes retry functionality

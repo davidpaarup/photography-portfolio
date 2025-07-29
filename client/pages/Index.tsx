@@ -14,7 +14,9 @@ import { PortfolioCard } from "@shared/api";
 
 export default function Index() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<PortfolioCard | null>(null);
+  const [selectedImage, setSelectedImage] = useState<PortfolioCard | null>(
+    null,
+  );
   const [activeCategory, setActiveCategory] = useState("All");
   const [portfolioImages, setPortfolioImages] = useState<PortfolioCard[]>([]);
   const [categories, setCategories] = useState<string[]>(["All"]);
@@ -25,13 +27,13 @@ export default function Index() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories');
+        const response = await fetch("/api/categories");
         if (response.ok) {
           const data = await response.json();
           setCategories(data.categories);
         }
       } catch (err) {
-        console.error('Failed to fetch categories:', err);
+        console.error("Failed to fetch categories:", err);
       }
     };
     fetchCategories();
@@ -43,9 +45,10 @@ export default function Index() {
       setIsLoading(true);
       setError(null);
       try {
-        const url = activeCategory === "All"
-          ? '/api/portfolio'
-          : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
+        const url =
+          activeCategory === "All"
+            ? "/api/portfolio"
+            : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -55,8 +58,10 @@ export default function Index() {
         const data = await response.json();
         setPortfolioImages(data.data);
       } catch (err) {
-        console.error('Failed to fetch portfolio images:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load portfolio');
+        console.error("Failed to fetch portfolio images:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load portfolio",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -236,14 +241,18 @@ export default function Index() {
           {isLoading && (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Loading portfolio...</span>
+              <span className="ml-2 text-muted-foreground">
+                Loading portfolio...
+              </span>
             </div>
           )}
 
           {/* Error State */}
           {error && (
             <div className="text-center py-20">
-              <p className="text-destructive mb-4">Failed to load portfolio: {error}</p>
+              <p className="text-destructive mb-4">
+                Failed to load portfolio: {error}
+              </p>
               <Button
                 onClick={() => window.location.reload()}
                 variant="outline"
@@ -258,7 +267,9 @@ export default function Index() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredImages.length === 0 ? (
                 <div className="col-span-full text-center py-20">
-                  <p className="text-muted-foreground text-lg">No images found for this category.</p>
+                  <p className="text-muted-foreground text-lg">
+                    No images found for this category.
+                  </p>
                 </div>
               ) : (
                 filteredImages.map((image, index) => (
@@ -277,10 +288,16 @@ export default function Index() {
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300">
                         <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <p className="font-semibold">{image.title || image.alt}</p>
-                          <p className="text-sm text-white/80">{image.category}</p>
+                          <p className="font-semibold">
+                            {image.title || image.alt}
+                          </p>
+                          <p className="text-sm text-white/80">
+                            {image.category}
+                          </p>
                           {image.description && (
-                            <p className="text-xs text-white/70 mt-1 line-clamp-2">{image.description}</p>
+                            <p className="text-xs text-white/70 mt-1 line-clamp-2">
+                              {image.description}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -406,10 +423,14 @@ export default function Index() {
               onClick={(e) => e.stopPropagation()}
             />
             <div className="absolute bottom-4 left-4 text-white">
-              <h3 className="text-xl font-semibold">{selectedImage.title || selectedImage.alt}</h3>
+              <h3 className="text-xl font-semibold">
+                {selectedImage.title || selectedImage.alt}
+              </h3>
               <p className="text-white/80">{selectedImage.category}</p>
               {selectedImage.description && (
-                <p className="text-sm text-white/70 mt-2 max-w-md">{selectedImage.description}</p>
+                <p className="text-sm text-white/70 mt-2 max-w-md">
+                  {selectedImage.description}
+                </p>
               )}
             </div>
           </div>

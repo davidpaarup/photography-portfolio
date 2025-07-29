@@ -7,28 +7,30 @@ const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 export const handlePortfolio: RequestHandler = async (req, res) => {
   try {
     const { category } = req.query;
-    
+
     // Build Strapi API URL with filters
     let url = `${STRAPI_URL}/api/portfolio-items?populate=image`;
-    
-    if (category && category !== 'All') {
+
+    if (category && category !== "All") {
       url += `&filters[category][$eq]=${encodeURIComponent(category as string)}`;
     }
 
     // Set up headers for Strapi request
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
 
     if (STRAPI_API_TOKEN) {
-      headers['Authorization'] = `Bearer ${STRAPI_API_TOKEN}`;
+      headers["Authorization"] = `Bearer ${STRAPI_API_TOKEN}`;
     }
 
     // Fetch from Strapi
     const response = await fetch(url, { headers });
-    
+
     if (!response.ok) {
-      throw new Error(`Strapi API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Strapi API error: ${response.status} ${response.statusText}`,
+      );
     }
 
     const strapiData: StrapiPortfolioResponse = await response.json();
@@ -36,10 +38,12 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
     // Transform Strapi data to our frontend format
     const portfolioCards: PortfolioCard[] = strapiData.data.map((item) => ({
       id: item.id,
-      src: item.attributes.image.data 
+      src: item.attributes.image.data
         ? `${STRAPI_URL}${item.attributes.image.data.attributes.url}`
-        : '/placeholder.svg',
-      alt: item.attributes.image.data?.attributes.alternativeText || item.attributes.title,
+        : "/placeholder.svg",
+      alt:
+        item.attributes.image.data?.attributes.alternativeText ||
+        item.attributes.title,
       category: item.attributes.category,
       title: item.attributes.title,
       description: item.attributes.description,
@@ -50,10 +54,9 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
       data: portfolioCards,
       meta: strapiData.meta,
     });
-
   } catch (error) {
-    console.error('Portfolio API error:', error);
-    
+    console.error("Portfolio API error:", error);
+
     // Fallback to sample data if Strapi is not available
     const fallbackData: PortfolioCard[] = [
       {
@@ -115,36 +118,45 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
 export const handleCategories: RequestHandler = async (req, res) => {
   try {
     const url = `${STRAPI_URL}/api/portfolio-items?fields[0]=category`;
-    
+
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
 
     if (STRAPI_API_TOKEN) {
-      headers['Authorization'] = `Bearer ${STRAPI_API_TOKEN}`;
+      headers["Authorization"] = `Bearer ${STRAPI_API_TOKEN}`;
     }
 
     const response = await fetch(url, { headers });
-    
+
     if (!response.ok) {
-      throw new Error(`Strapi API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Strapi API error: ${response.status} ${response.statusText}`,
+      );
     }
 
     const strapiData: StrapiPortfolioResponse = await response.json();
-    
+
     // Extract unique categories
-    const categories = ['All', ...new Set(
-      strapiData.data.map(item => item.attributes.category)
-    )];
+    const categories = [
+      "All",
+      ...new Set(strapiData.data.map((item) => item.attributes.category)),
+    ];
 
     res.json({ categories });
-
   } catch (error) {
-    console.error('Categories API error:', error);
-    
+    console.error("Categories API error:", error);
+
     // Fallback categories
     res.json({
-      categories: ['All', 'Architecture', 'Landscape', 'Portrait', 'Street', 'Nature']
+      categories: [
+        "All",
+        "Architecture",
+        "Landscape",
+        "Portrait",
+        "Street",
+        "Nature",
+      ],
     });
   }
 };
