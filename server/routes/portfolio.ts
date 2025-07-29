@@ -20,6 +20,8 @@ export const handlePortfolio: RequestHandler = async (req, res) => {
       "Content-Type": "application/json",
     };
 
+    console.log("strapi api token", STRAPI_API_TOKEN);
+
     if (STRAPI_API_TOKEN) {
       
       headers["Authorization"] = `Bearer ${STRAPI_API_TOKEN}`;
