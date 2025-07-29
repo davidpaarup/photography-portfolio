@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { handlePortfolio, handleCategories } from "./routes/portfolio";
 
 export function createServer() {
   const app = express();
@@ -16,6 +17,10 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Portfolio API routes
+  app.get("/api/portfolio", handlePortfolio);
+  app.get("/api/categories", handleCategories);
 
   return app;
 }
