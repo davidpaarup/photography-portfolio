@@ -10,3 +10,53 @@
 export interface DemoResponse {
   message: string;
 }
+
+/**
+ * Portfolio types for Strapi integration
+ */
+export interface StrapiImage {
+  id: number;
+  attributes: {
+    url: string;
+    alternativeText?: string;
+    width?: number;
+    height?: number;
+  };
+}
+
+export interface StrapiPortfolioItem {
+  id: number;
+  attributes: {
+    title: string;
+    description?: string;
+    category: string;
+    featured?: boolean;
+    image: {
+      data: StrapiImage;
+    };
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export interface StrapiPortfolioResponse {
+  data: StrapiPortfolioItem[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+export interface PortfolioCard {
+  id: number;
+  src: string;
+  alt: string;
+  category: string;
+  title: string;
+  description?: string;
+  featured?: boolean;
+}
