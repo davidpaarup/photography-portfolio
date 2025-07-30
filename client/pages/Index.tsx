@@ -10,7 +10,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PortfolioCard } from "@shared/api";
+import { PortfolioCard, AboutContent } from "@shared/api";
 
 export default function Index() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,8 +22,9 @@ export default function Index() {
   const [categories, setCategories] = useState<string[]>(["All"]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [aboutContent, setAboutContent] = useState<AboutContent | null>(null);
 
-  // Fetch categories on component mount
+  // Fetch categories and about content on component mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -36,7 +37,21 @@ export default function Index() {
         console.error("Failed to fetch categories:", err);
       }
     };
+    
+    const fetchAboutContent = async () => {
+      try {
+        const response = await fetch("/api/about");
+        if (response.ok) {
+          const data = await response.json();
+          setAboutContent(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch about content:", err);
+      }
+    };
+    
     fetchCategories();
+    fetchAboutContent();
   }, []);
 
   // Fetch portfolio images based on active category
@@ -327,21 +342,29 @@ export default function Index() {
                 About Me
               </h2>
               <div className="space-y-6 text-lg text-muted-foreground">
-                <p>
-                  I'm Alex Morgan, a passionate photographer with over 8 years
-                  of experience capturing the beauty in everyday moments and
-                  extraordinary landscapes.
-                </p>
-                <p>
-                  My work spans across multiple genres including architecture,
-                  landscape, and portrait photography. I believe that every
-                  frame tells a story, and I'm dedicated to telling yours with
-                  authenticity and artistic vision.
-                </p>
-                <p>
-                  Based in San Francisco, I'm available for commissions,
-                  collaborations, and adventures around the world.
-                </p>
+                {aboutContent ? (
+                  aboutContent.content.split('\n\n').map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))
+                ) : (
+                  <>
+                    <p>
+                      I'm Alex Morgan, a passionate photographer with over 8 years
+                      of experience capturing the beauty in everyday moments and
+                      extraordinary landscapes.
+                    </p>
+                    <p>
+                      My work spans across multiple genres including architecture,
+                      landscape, and portrait photography. I believe that every
+                      frame tells a story, and I'm dedicated to telling yours with
+                      authenticity and artistic vision.
+                    </p>
+                    <p>
+                      Based in San Francisco, I'm available for commissions,
+                      collaborations, and adventures around the world.
+                    </p>
+                  </>
+                )}
               </div>
               <div className="flex space-x-4 mt-8">
                 <Button variant="outline" size="icon">

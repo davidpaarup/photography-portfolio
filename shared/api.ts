@@ -54,3 +54,23 @@ export interface PortfolioCard {
   description?: string;
   featured?: boolean;
 }
+
+/**
+ * About section types for Strapi integration
+ */
+export interface StrapiAboutItem {
+  id: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StrapiAboutResponse {
+  data: StrapiAboutItem;
+  meta: object;
+}
+
+export interface AboutContent {
+  id: number;
+  content: string;
+}

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handlePortfolio, handleCategories } from "./routes/portfolio";
+import { handleAbout } from "./routes/about";
 
 export function createServer() {
   const app = express();
@@ -21,6 +22,9 @@ export function createServer() {
   // Portfolio API routes
   app.get("/api/portfolio", handlePortfolio);
   app.get("/api/categories", handleCategories);
+
+  // About API route
+  app.get("/api/about", handleAbout);
 
   return app;
 }
