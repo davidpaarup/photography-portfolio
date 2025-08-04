@@ -28,7 +28,7 @@ export default function Index() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("https://photography-portfolio-2-gn7rztuf7-david-paarups-projects.vercel.app/api/categories");
+        const response = await fetch("https://photography-portfolio-2.vercel.app/api/categories");
         if (response.ok) {
           const data = await response.json();
           setCategories(data.categories);
@@ -40,7 +40,7 @@ export default function Index() {
     
     const fetchAboutContent = async () => {
       try {
-        const response = await fetch("https://photography-portfolio-2-gn7rztuf7-david-paarups-projects.vercel.app/api/about");
+        const response = await fetch("https://photography-portfolio-2.vercel.app/api/about");
         if (response.ok) {
           const data = await response.json();
           setAboutContent(data);
@@ -62,8 +62,8 @@ export default function Index() {
       try {
         const url =
           activeCategory === "All"
-            ? "https://photography-portfolio-2-gn7rztuf7-david-paarups-projects.vercel.app/api/portfolio"
-            : `https://photography-portfolio-2-gn7rztuf7-david-paarups-projects.vercel.app/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
+            ? "https://photography-portfolio-2.vercel.app/api/portfolio"
+            : `https://photography-portfolio-2.vercel.app/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
 
         const response = await fetch(url);
         if (!response.ok) {
