@@ -4,15 +4,15 @@ import path from "path";
 // Server build configuration
 export default defineConfig({
   build: {
-    lib: {
-      entry: path.resolve(__dirname, "server/node-build.ts"),
-      name: "server",
-      fileName: "production",
-      formats: ["es"],
-    },
     outDir: "dist/server",
     target: "node22",
     ssr: true,
+    lib: {
+      entry: path.resolve(__dirname, "server/node-build.ts"),
+      name: "server",
+      fileName: "node-build",
+      formats: ["es"],
+    },
     rollupOptions: {
       external: [
         // Node.js built-ins
